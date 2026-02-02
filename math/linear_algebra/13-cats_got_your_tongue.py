@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Module that provides a function to concatenate two numpy matrices along a specified axis.
+Module that provides a function to concatenate
+two numpy matrices along a specified axis.
 """
 
 import numpy as np
@@ -17,3 +18,4 @@ def np_cat(mat1, mat2, axis=0):
         numpy.ndarray: Concatenated matrix
     """
     return np.concatenate((mat1, mat2), axis=axis)
+
