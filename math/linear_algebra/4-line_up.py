@@ -11,8 +11,9 @@ def add_arrays(arr1, arr2):
         arr1 (list of int/float): First array
         arr2 (list of int/float): Second array
     Returns:
-        list of int/float: New array with element-wise sums, or None if shapes differ
+        list of int/float: New array with element-wise sums
     """
     if len(arr1) != len(arr2):
         return None
     return [a + b for a, b in zip(arr1, arr2)]
+
