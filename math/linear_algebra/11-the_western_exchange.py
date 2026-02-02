@@ -2,6 +2,8 @@
 """
 Module that provides a function to transpose a numpy array.
 """
+
+
 def np_transpose(matrix):
     """
     Returns the transpose of a numpy array.
