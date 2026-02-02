@@ -11,7 +11,8 @@ def mat_mul(mat1, mat2):
         mat1 (list of lists of int/float): First matrix
         mat2 (list of lists of int/float): Second matrix
     Returns:
-        list of lists: New matrix as the result of mat1 * mat2, or None if shapes incompatible
+        list of lists: New matrix as the result of mat1 * mat2,
+        or None if shapes incompatible
     """
     if len(mat1[0]) != len(mat2):
         return None
@@ -23,3 +24,4 @@ def mat_mul(mat1, mat2):
             row.append(val)
         result.append(row)
     return result
+
