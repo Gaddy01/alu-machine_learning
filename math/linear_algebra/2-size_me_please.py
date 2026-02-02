@@ -2,11 +2,12 @@
 """
 Module that provides a function to compute the shape of a matrix.
 """
+
 def matrix_shape(matrix):
     """
     Calculates the shape of a matrix.
     Args:
-        matrix (list): A list representing a matrix (possibly multi-dimensional)
+        matrix (list): A list representing a matrix
     Returns:
         list: A list of integers representing the shape of the matrix
     """
