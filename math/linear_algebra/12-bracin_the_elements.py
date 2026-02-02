@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module that provides a function to perform 
+Module that provides a function to perform
 element-wise arithmetic operations on numpy arrays.
 """
 
@@ -16,4 +16,3 @@ def np_elementwise(mat1, mat2):
         tuple: (sum, difference, product, quotient)
     """
     return (mat1 + mat2, mat1 - mat2, mat1 * mat2, mat1 / mat2)
-
