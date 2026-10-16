@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """Calculate total intra-cluster variance."""
 
