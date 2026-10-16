@@ -69,8 +69,7 @@ def expectation(X, pi, m, S):
     if np.any(total <= 0) or not np.all(np.isfinite(total)):
         return None, None
 
-    l = np.sum(np.log(total))
-
+    log_likelihood = np.sum(np.log(total))
     g = g / total
 
-    return g, l
+    return g, log_likelihood
