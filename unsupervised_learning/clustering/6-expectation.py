@@ -1,43 +1,80 @@
 #!/usr/bin/env python3
-
-"""
-This module contains a function that calculates
-expectation step in the EM algorithm for a GMM
-"""
+"""Calculate the expectation step of the EM algorithm."""
 
 import numpy as np
+
 pdf = __import__('5-pdf').pdf
 
 
 def expectation(X, pi, m, S):
     """
-    initializes variables for a Gaussian Mixture Model
+    Calculate the expectation step of a GMM.
 
-    X: numpy.ndarray (n, d) containing the dataset
-        - n no. of data points
-        - d no. of dimensions for each data point
-    pi: numpy.ndarray (k,) containing the priors for each cluster
-    m: numpy.ndarray (k, d) containing centroid means for each cluster
-    S: numpy.ndarray (k, d, d) covariance matrices for each cluster
+    Args:
+        X: Dataset with shape (n, d).
+        pi: Prior probabilities with shape (k,).
+        m: Cluster means with shape (k, d).
+        S: Covariance matrices with shape (k, d, d).
 
-    return:
-        - g: numpy.ndarray (k, n) containing the posterior
-            probabilities for each data point in each cluster
-        -l: log likelihood of the model
+    Returns:
+        g: Posterior probabilities with shape (k, n).
+        l: Total log-likelihood.
+        (None, None) on failure.
     """
-    if len(X.shape) != 2 or len(S.shape) != 3\
-            or len(pi.shape) != 1 or len(m.shape) != 2\
-            or m.shape[1] != X.shape[1]\
-            or S.shape[2] != S.shape[1]\
-            or S.shape[0] != pi.shape[0]\
-            or S.shape[0] != m.shape[0]\
-            or np.min(pi) < 0:
+    if not isinstance(X, np.ndarray):
         return None, None
+
+    if not isinstance(pi, np.ndarray):
+        return None, None
+
+    if not isinstance(m, np.ndarray):
+        return None, None
+
+    if not isinstance(S, np.ndarray):
+        return None, None
+
+    if X.ndim != 2 or pi.ndim != 1:
+        return None, None
+
+    if m.ndim != 2 or S.ndim != 3:
+        return None, None
+
     n, d = X.shape
     k = pi.shape[0]
+
+    if n == 0 or d == 0 or k == 0:
+        return None, None
+
+    if m.shape != (k, d) or S.shape != (k, d, d):
+        return None, None
+
+    if not all(np.issubdtype(a.dtype, np.number)
+               for a in (X, pi, m, S)):
+        return None, None
+
+    if not np.all(np.isfinite(pi)):
+        return None, None
+
+    if np.any(pi < 0) or not np.isclose(np.sum(pi), 1):
+        return None, None
+
     g = np.zeros((k, n))
+
     for i in range(k):
-        g[i] = pi[i] * pdf(X, m[i], S[i])
-    g = g / np.sum(g, axis=0)
-    l = np.sum(np.log(np.sum(g, axis=0)))
+        p = pdf(X, m[i], S[i])
+
+        if p is None:
+            return None, None
+
+        g[i] = pi[i] * p
+
+    total = np.sum(g, axis=0)
+
+    if np.any(total <= 0) or not np.all(np.isfinite(total)):
+        return None, None
+
+    l = np.sum(np.log(total))
+
+    g = g / total
+
     return g, l
