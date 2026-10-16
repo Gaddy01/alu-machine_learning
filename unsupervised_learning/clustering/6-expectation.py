@@ -7,20 +7,8 @@ pdf = __import__('5-pdf').pdf
 
 
 def expectation(X, pi, m, S):
-    """
-    Calculate the expectation step of a GMM.
+    """Calculate posterior probabilities and log-likelihood."""
 
-    Args:
-        X: Dataset with shape (n, d).
-        pi: Prior probabilities with shape (k,).
-        m: Cluster means with shape (k, d).
-        S: Covariance matrices with shape (k, d, d).
-
-    Returns:
-        g: Posterior probabilities with shape (k, n).
-        l: Total log-likelihood.
-        (None, None) on failure.
-    """
     if not isinstance(X, np.ndarray):
         return None, None
 
@@ -48,8 +36,16 @@ def expectation(X, pi, m, S):
     if m.shape != (k, d) or S.shape != (k, d, d):
         return None, None
 
-    if not all(np.issubdtype(a.dtype, np.number)
-               for a in (X, pi, m, S)):
+    if not np.issubdtype(X.dtype, np.number):
+        return None, None
+
+    if not np.issubdtype(pi.dtype, np.number):
+        return None, None
+
+    if not np.issubdtype(m.dtype, np.number):
+        return None, None
+
+    if not np.issubdtype(S.dtype, np.number):
         return None, None
 
     if not np.all(np.isfinite(pi)):
