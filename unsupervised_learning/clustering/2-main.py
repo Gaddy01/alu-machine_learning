@@ -1,19 +1,40 @@
+
 #!/usr/bin/env python3
+"""Calculate total intra-cluster variance."""
 
 import numpy as np
-kmeans = __import__('1-kmeans').kmeans
-variance = __import__('2-variance').variance
 
-if __name__ == "__main__":
-    np.random.seed(0)
-    a = np.random.multivariate_normal([30, 40], [[16, 0], [0, 16]], size=50)
-    b = np.random.multivariate_normal([10, 25], [[16, 0], [0, 16]], size=50)
-    c = np.random.multivariate_normal([40, 20], [[16, 0], [0, 16]], size=50)
-    d = np.random.multivariate_normal([60, 30], [[16, 0], [0, 16]], size=50)
-    e = np.random.multivariate_normal([20, 70], [[16, 0], [0, 16]], size=50)
-    X = np.concatenate((a, b, c, d, e), axis=0)
-    np.random.shuffle(X)
 
-    for k in range(1, 11):
-        C, _ = kmeans(X, k)
-        print('Variance with {} clusters: {}'.format(k, variance(X, C).round(5)))
+def variance(X, C):
+    """
+    Calculate total intra-cluster variance.
+
+    Args:
+        X: numpy.ndarray of shape (n, d)
+        C: numpy.ndarray of shape (k, d)
+
+    Returns:
+        Total intra-cluster variance, or None on failure.
+    """
+    if not isinstance(X, np.ndarray):
+        return None
+    if not isinstance(C, np.ndarray):
+        return None
+    if X.ndim != 2 or C.ndim != 2:
+        return None
+    if X.shape[0] == 0 or C.shape[0] == 0:
+        return None
+    if X.shape[1] == 0 or X.shape[1] != C.shape[1]:
+        return None
+    if not (np.issubdtype(X.dtype, np.number)
+            and np.issubdtype(C.dtype, np.number)):
+        return None
+
+    # Calculate squared distances to every centroid
+    distances = np.sum((X - C[:, np.newaxis]) ** 2, axis=-1)
+    # Find minimum squared distance for each point
+    min_distances = np.min(distances, axis=0)
+    # Calculate total intra-cluster variance
+    var = np.sum(min_distances)
+
+    return var
