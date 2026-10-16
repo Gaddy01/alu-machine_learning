@@ -1,37 +1,35 @@
 #!/usr/bin/env python3
-
-"""
-This module contains a function that
-initializes variables for a Gaussian Mixture Model
-"""
+"""Initialize Gaussian Mixture Model parameters."""
 
 import numpy as np
+
 kmeans = __import__('1-kmeans').kmeans
 
 
 def initialize(X, k):
-    """
-    initializes variables for a Gaussian Mixture Model
+    """Initialize GMM priors, means, and covariance matrices."""
 
-    X: numpy.ndarray (n, d) containing the dataset
-        - n no. of data points
-        - d no. of dimensions for each data point
-    k: positive integer - the number of clusters
+    if not isinstance(X, np.ndarray) or X.ndim != 2:
+        return None, None, None
 
-    return:
-        - pi: numpy.ndarray (k,) containing priors for each cluster
-        initialized to be equal
-        - m: numpy.ndarray (k, d) containing centroid means for each cluster,
-        initialized with K-means
-        - S: numpy.ndarray (k, d, d) covariance matrices for each cluster,
-        initialized as identity matrices
-    """
+    if X.shape[0] == 0 or X.shape[1] == 0:
+        return None, None, None
+
+    if not isinstance(k, int) or k <= 0 or k > X.shape[0]:
+        return None, None, None
+
     n, d = X.shape
-    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
-        return None, None, None
-    if not isinstance(k, int) or k <= 0:
-        return None, None, None
-    pi = np.full((k,), 1 / k)
+
+    # Equal prior probabilities
+    pi = np.full(k, 1 / k)
+
+    # Initialize means using K-means
     m, _ = kmeans(X, k)
-    S = np.full((k, d, d), np.identity(d))
+
+    if m is None:
+        return None, None, None
+
+    # Identity covariance matrix per cluster
+    S = np.tile(np.eye(d), (k, 1, 1))
+
     return pi, m, S
